@@ -1,0 +1,3 @@
+C:\Windows\System32\wslg.exe ~ -d Ubuntu-22.04 /usr/share/code/code --unity-launch 
+
+C:\Windows\System32\wslg.exe ~ -d Ubuntu-22.04 [EXECUTABLE_PATH]
