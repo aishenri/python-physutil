@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 600;
+                 height: 500;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#FFB2AC", "dtype": "ligand", "id": "LIG1.G", "label": "LIG1.G", "shape": "dot", "size": 10, "title": "LIG1.G"}, {"color": "#ACD0FF", "dtype": "protein", "id": "ALA216.A", "label": "ALA216.A", "shape": "dot", "size": 10, "title": "ALA216.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "ALA343.B", "label": "ALA343.B", "shape": "dot", "size": 10, "title": "ALA343.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "ASP129.A", "label": "ASP129.A", "shape": "dot", "size": 10, "title": "ASP129.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "ASP352.B", "label": "ASP352.B", "shape": "dot", "size": 10, "title": "ASP352.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "CYS133.A", "label": "CYS133.A", "shape": "dot", "size": 10, "title": "CYS133.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "CYS199.A", "label": "CYS199.A", "shape": "dot", "size": 10, "title": "CYS199.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "CYS344.B", "label": "CYS344.B", "shape": "dot", "size": 10, "title": "CYS344.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "ILE130.A", "label": "ILE130.A", "shape": "dot", "size": 10, "title": "ILE130.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "ILE206.A", "label": "ILE206.A", "shape": "dot", "size": 10, "title": "ILE206.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "LEU126.A", "label": "LEU126.A", "shape": "dot", "size": 10, "title": "LEU126.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "LEU348.B", "label": "LEU348.B", "shape": "dot", "size": 10, "title": "LEU348.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "MET337.B", "label": "MET337.B", "shape": "dot", "size": 10, "title": "MET337.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "PHE330.B", "label": "PHE330.B", "shape": "dot", "size": 10, "title": "PHE330.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "PHE331.B", "label": "PHE331.B", "shape": "dot", "size": 10, "title": "PHE331.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "PHE351.B", "label": "PHE351.B", "shape": "dot", "size": 10, "title": "PHE351.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "PRO338.B", "label": "PRO338.B", "shape": "dot", "size": 10, "title": "PRO338.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "SER212.A", "label": "SER212.A", "shape": "dot", "size": 10, "title": "SER212.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "SER334.B", "label": "SER334.B", "shape": "dot", "size": 10, "title": "SER334.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "THR110.A", "label": "THR110.A", "shape": "dot", "size": 10, "title": "THR110.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "THR134.A", "label": "THR134.A", "shape": "dot", "size": 10, "title": "THR134.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "THR203.A", "label": "THR203.A", "shape": "dot", "size": 10, "title": "THR203.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "THR209.A", "label": "THR209.A", "shape": "dot", "size": 10, "title": "THR209.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "THR213.A", "label": "THR213.A", "shape": "dot", "size": 10, "title": "THR213.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "THR355.B", "label": "THR355.B", "shape": "dot", "size": 10, "title": "THR355.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "TRP125.A", "label": "TRP125.A", "shape": "dot", "size": 10, "title": "TRP125.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "TRP327.B", "label": "TRP327.B", "shape": "dot", "size": 10, "title": "TRP327.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "TYR109.A", "label": "TYR109.A", "shape": "dot", "size": 10, "title": "TYR109.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "TYR359.B", "label": "TYR359.B", "shape": "dot", "size": 10, "title": "TYR359.B"}, {"color": "#ACD0FF", "dtype": "protein", "id": "TYR38.A", "label": "TYR38.A", "shape": "dot", "size": 10, "title": "TYR38.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "VAL200.A", "label": "VAL200.A", "shape": "dot", "size": 10, "title": "VAL200.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "VAL201.A", "label": "VAL201.A", "shape": "dot", "size": 10, "title": "VAL201.A"}, {"color": "#ACD0FF", "dtype": "protein", "id": "VAL210.A", "label": "VAL210.A", "shape": "dot", "size": 10, "title": "VAL210.A"}]);
+                  edges = new vis.DataSet([{"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - ALA216.A\u003cbr\u003eHydrophobic: (0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, None, None, 0, 4, 0, 4, None, None, None, None, None, None, 5, 4, None, None, 5, 4, None, None, 0, 4, None, None, 0, 4, 0, 4, 0, 4, None, None, 0, 4, 0, 4)", "to": "ALA216.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - ALA343.B\u003cbr\u003eHydrophobic: (None, None, 25, 4, 25, 4, 29, 4, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)", "to": "ALA343.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - ASP129.A\u003cbr\u003eCationic: (13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8, 13, 8)\u003cbr\u003eHBDonor: (52, 8, 52, 8, 52, 8, 52, 9, 52, 8, 52, 8, 52, 8, 52, 8, 52, 9, 52, 8, 52, 8, 52, 9, 52, 8, 52, 8, 52, 8, 52, 8, 52, 8, 52, 8, 52, 9, 52, 9, 52, 8, 52, 8, 52, 8, 52, 9, 52, 8)\u003cbr\u003eHydrophobic: (8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 0, 10, 0, 10, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7, 8, 7)", "to": "ASP129.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - ASP352.B\u003cbr\u003eHydrophobic: (18, 2, None, None, None, None, None, None, 17, 7, None, None, 18, 7, 19, 7, 19, 7, 18, 2, 18, 2, 18, 4, 18, 2, None, None, None, None, None, None, None, None, 18, 7, None, None, None, None, 18, 4, None, None, 19, 2, None, None, 18, 2)", "to": "ASP352.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - CYS133.A\u003cbr\u003eHydrophobic: (0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, None, None, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 2, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4, 0, 4)", "to": "CYS133.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - CYS199.A\u003cbr\u003eHydrophobic: (None, None, 22, 4, 22, 4, 22, 7, 22, 8, 22, 8, 22, 8, 22, 8, 22, 8, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 22, 7, None, None, None, None, 22, 8, 22, 8, None, None, None, None)", "to": "CYS199.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - CYS344.B\u003cbr\u003eHydrophobic: (None, None, None, None, None, None, 31, 8, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)", "to": "CYS344.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - ILE130.A\u003cbr\u003eHydrophobic: (0, 10, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 10, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 7, 10, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2)", "to": "ILE130.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - ILE206.A\u003cbr\u003eHydrophobic: (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 31, 13, 25, 13, 29, 13, 23, 13, 23, 13, 23, 10, 23, 10, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)", "to": "ILE206.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - LEU126.A\u003cbr\u003eHydrophobic: (22, 13, 39, 9, 9, 13, 22, 13, 9, 13, 39, 13, 22, 13, 40, 9, 39, 9, None, None, 3, 9, 22, 13, 40, 9, None, None, None, None, None, None, 9, 9, None, None, 9, 9, 9, 9, None, None, None, None, 39, 13, None, None, None, None)", "to": "LEU126.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - LEU348.B\u003cbr\u003eHydrophobic: (None, None, None, None, None, None, None, None, None, None, None, None, None, None, 17, 2, 17, 9, 17, 2, 17, 2, 17, 4, 17, 13, None, None, 18, 9, None, None, None, None, None, None, None, None, None, None, 18, 17, 17, 13, 17, 2, 17, 4, 17, 13)", "to": "LEU348.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - MET337.B\u003cbr\u003eHydrophobic: (23, 11, 24, 11, 24, 11, 25, 11, None, None, 23, 11, None, None, None, None, 23, 11, None, None, 31, 11, None, None, 31, 4, 29, 4, 30, 10, 17, 10, 17, 4, 25, 7, None, None, None, None, 30, 4, 31, 4, 29, 4, 29, 4, None, None)", "to": "MET337.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - PHE330.B\u003cbr\u003eCationPi: (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 13, 7, None, None, None, None, None, None, 13, 7, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)\u003cbr\u003eHydrophobic: (3, 12, 3, 12, 7, 16, 8, 10, 3, 12, 3, 16, 7, 16, 7, 16, 3, 12, 3, 12, 33, 12, 3, 12, 3, 12, 8, 16, 8, 14, 8, 10, 8, 12, 7, 16, 7, 16, 8, 10, 3, 10, 3, 12, 3, 12, 3, 12, 3, 12)\u003cbr\u003ePiStacking: (None, None, 3, 7, None, None, None, None, None, None, None, None, None, None, None, None, 3, 7, None, None, None, None, 3, 7, 3, 7, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 3, 7, 3, 7, None, None, None, None, 3, 7)", "to": "PHE330.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - PHE331.B\u003cbr\u003eHydrophobic: (0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 3, 10, None, None, 0, 12, 0, 10, 0, 12, 0, 12, 0, 12, 0, 12, 0, 10, 0, 12, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10, 0, 10)\u003cbr\u003ePiStacking: (3, 7, 0, 7, 0, 7, None, None, 0, 7, 3, 7, 0, 7, 0, 7, 0, 7, None, None, None, None, 3, 7, 0, 7, None, None, None, None, None, None, 3, 7, 0, 7, 3, 7, 0, 7, None, None, 0, 7, 0, 7, 0, 7, 3, 7)", "to": "PHE331.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - PHE351.B\u003cbr\u003eHydrophobic: (17, 4, 23, 8, 23, 16, 23, 14, 23, 12, 16, 8, 16, 14, 16, 8, 17, 4, 16, 8, 16, 8, 17, 8, 16, 14, 17, 7, 17, 7, 18, 7, 18, 4, 17, 4, 17, 10, 29, 12, 16, 16, 16, 8, 17, 4, 17, 8, 16, 8)\u003cbr\u003ePiStacking: (None, None, 24, 7, None, None, 24, 7, 24, 7, 24, 7, None, None, None, None, None, None, 24, 7, None, None, None, None, 24, 7, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 24, 7, 24, 7, None, None, 24, 7, 24, 7)", "to": "PHE351.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - PRO338.B\u003cbr\u003eHydrophobic: (30, 1, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 30, 1, 30, 9, None, None, None, None, None, None, 29, 9, 29, 1, None, None, 30, 1, None, None, None, None, None, None, None, None, 25, 9, None, None)", "to": "PRO338.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - SER212.A\u003cbr\u003eHBDonor: (44, 10, 44, 10, None, None, 44, 10, 44, 10, None, None, None, None, 44, 10, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 44, 10, None, None, None, None, 44, 10, None, None, None, None, 44, 10, None, None)\u003cbr\u003eHydrophobic: (4, 4, 5, 4, 5, 4, 5, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 9, 4, 4, 4, 4, None, None, 4, 4, 4, 4, 4, 4, None, None, 5, 2, 4, 4, 4, 4, 5, 2, 4, 4, 4, 4, 5, 2, 5, 4)", "to": "SER212.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - SER334.B\u003cbr\u003eHydrophobic: (29, 2, None, None, None, None, None, None, None, None, 25, 4, 30, 2, 25, 4, 30, 2, 31, 4, 30, 2, None, None, None, None, None, None, 29, 4, 30, 4, 17, 2, 31, 2, 29, 2, None, None, 30, 2, 30, 2, None, None, 30, 2, 30, 2)", "to": "SER334.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - THR110.A\u003cbr\u003eHydrophobic: (None, None, None, None, 18, 2, 18, 2, 18, 8, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)", "to": "THR110.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - THR134.A\u003cbr\u003eHBDonor: (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 44, 6, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)", "to": "THR134.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - THR203.A\u003cbr\u003eHydrophobic: (31, 8, 30, 8, 29, 8, None, None, 30, 8, 31, 8, 29, 8, 30, 8, 25, 8, 25, 8, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 25, 8, 23, 8, None, None, 24, 8, 23, 8, 24, 8, 23, 8, 23, 8)", "to": "THR203.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - THR209.A\u003cbr\u003eHydrophobic: (4, 8, None, None, None, None, None, None, None, None, 30, 8, 29, 8, None, None, 29, 8, None, None, 3, 8, 3, 8, 4, 4, 3, 8, 3, 8, 24, 8, 31, 8, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)", "to": "THR209.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - THR213.A\u003cbr\u003eHydrophobic: (4, 8, None, None, None, None, 5, 2, 4, 8, 4, 8, 4, 8, 4, 8, 4, 8, 4, 2, None, None, 4, 2, 5, 8, 4, 2, 4, 2, 3, 8, 4, 4, 4, 8, None, None, 5, 2, 5, 2, 5, 2, None, None, 4, 8, None, None)", "to": "THR213.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - THR355.B\u003cbr\u003eHydrophobic: (9, 8, 36, 8, None, None, 9, 8, None, None, 8, 4, 8, 8, 8, 8, 8, 8, 8, 8, 8, 4, 8, 8, 8, 2, None, None, 8, 8, 8, 4, 8, 8, 8, 8, None, None, 8, 8, 8, 8, 8, 4, 8, 4, 8, 8, 8, 4)", "to": "THR355.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - TRP125.A\u003cbr\u003eHydrophobic: (22, 16, 22, 16, 10, 16, 10, 16, 10, 20, None, None, None, None, 22, 16, 22, 16, 22, 16, 22, 16, 22, 16, None, None, 22, 16, None, None, None, None, None, None, 22, 16, 22, 16, 22, 16, None, None, 22, 16, None, None, 22, 20, None, None)", "to": "TRP125.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - TRP327.B\u003cbr\u003eHydrophobic: (8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16, 8, 16)", "to": "TRP327.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - TYR109.A\u003cbr\u003eHydrophobic: (18, 17, 17, 10, 17, 8, 17, 8, 19, 8, 19, 10, 22, 10, 18, 12, 22, 12, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 19, 10, 19, 10, 22, 17, 22, 10, None, None, None, None, None, None)", "to": "TYR109.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - TYR359.B\u003cbr\u003eHydrophobic: (8, 10, 8, 8, 8, 8, 8, 10, 8, 10, 8, 10, 8, 10, 8, 10, 8, 10, 8, 10, None, None, 8, 10, 8, 8, 8, 10, 8, 10, 8, 10, 8, 10, 8, 8, 8, 10, 8, 10, 8, 10, 8, 12, 8, 10, 8, 10, 8, 10)", "to": "TYR359.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - TYR38.A\u003cbr\u003eHydrophobic: (None, None, None, None, None, None, 31, 0, None, None, 17, 0, None, None, None, None, None, None, 16, 14, None, None, 16, 0, 17, 10, None, None, None, None, None, None, None, None, 17, 4, None, None, None, None, 16, 13, 16, 23, 12, 14, 18, 21, 17, 10)", "to": "TYR38.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - VAL200.A\u003cbr\u003eHydrophobic: (12, 4, 11, 2, 11, 2, 11, 2, 22, 2, 11, 2, 11, 2, 11, 2, 11, 2, 11, 10, 11, 2, 11, 2, 22, 2, 11, 2, 11, 10, 11, 10, 11, 6, 11, 10, 11, 2, 11, 6, 11, 2, 11, 2, 11, 2, 11, 2, 11, 2)", "to": "VAL200.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - VAL201.A\u003cbr\u003eHBAcceptor: (28, 1, 28, 1, None, None, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, None, None, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1, 28, 1)\u003cbr\u003eHydrophobic: (11, 4, 3, 10, 3, 10, 3, 10, 3, 6, 11, 10, 3, 10, 30, 4, 25, 4, 25, 4, 11, 10, 23, 10, 3, 10, 11, 10, 11, 10, 11, 10, 23, 4, 25, 4, 23, 2, 3, 10, 40, 10, 23, 6, 3, 10, 3, 10, 24, 10)", "to": "VAL201.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LIG1.G", "title": "LIG1.G - VAL210.A\u003cbr\u003eHydrophobic: (None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, 30, 10, 29, 10, 30, 10, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)", "to": "VAL210.A", "width": 1.0}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

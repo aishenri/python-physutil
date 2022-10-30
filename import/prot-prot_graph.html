@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 640;
+                 height: 500;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 640;
+                 height: 500;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#67000d", "dtype": "ligand", "id": "GLN119.A", "label": "GLN119.A", "shape": "dot", "size": 10, "title": "GLN119.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "GLY118.A", "label": "GLY118.A", "shape": "dot", "size": 10, "title": "GLY118.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "GLN189.A", "label": "GLN189.A", "shape": "dot", "size": 10, "title": "GLN189.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "ALA190.A", "label": "ALA190.A", "shape": "dot", "size": 10, "title": "ALA190.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "LYS191.A", "label": "LYS191.A", "shape": "dot", "size": 10, "title": "LYS191.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "ALA192.A", "label": "ALA192.A", "shape": "dot", "size": 10, "title": "ALA192.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "GLU193.A", "label": "GLU193.A", "shape": "dot", "size": 10, "title": "GLU193.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "GLU194.A", "label": "GLU194.A", "shape": "dot", "size": 10, "title": "GLU194.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "GLU195.A", "label": "GLU195.A", "shape": "dot", "size": 10, "title": "GLU195.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "VAL196.A", "label": "VAL196.A", "shape": "dot", "size": 10, "title": "VAL196.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "SER197.A", "label": "SER197.A", "shape": "dot", "size": 10, "title": "SER197.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "GLU198.A", "label": "GLU198.A", "shape": "dot", "size": 10, "title": "GLU198.A"}, {"color": "#7eb8da", "dtype": "protein", "id": "CYS199.A", "label": "CYS199.A", "shape": "dot", "size": 10, "title": "CYS199.A"}, {"color": "#fc9676", "dtype": "ligand", "id": "VAL120.A", "label": "VAL120.A", "shape": "dot", "size": 10, "title": "VAL120.A"}, {"color": "#5ca4d0", "dtype": "protein", "id": "PHE185.A", "label": "PHE185.A", "shape": "dot", "size": 10, "title": "PHE185.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "ARG188.A", "label": "ARG188.A", "shape": "dot", "size": 10, "title": "ARG188.A"}, {"color": "#fc9676", "dtype": "ligand", "id": "VAL121.A", "label": "VAL121.A", "shape": "dot", "size": 10, "title": "VAL121.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "ILE105.A", "label": "ILE105.A", "shape": "dot", "size": 10, "title": "ILE105.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "TRP115.A", "label": "TRP115.A", "shape": "dot", "size": 10, "title": "TRP115.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "LEU117.A", "label": "LEU117.A", "shape": "dot", "size": 10, "title": "LEU117.A"}, {"color": "#fb7959", "dtype": "ligand", "id": "CYS122.A", "label": "CYS122.A", "shape": "dot", "size": 10, "title": "CYS122.A"}, {"color": "#f7593f", "dtype": "ligand", "id": "ASP123.A", "label": "ASP123.A", "shape": "dot", "size": 10, "title": "ASP123.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "PRO184.A", "label": "PRO184.A", "shape": "dot", "size": 10, "title": "PRO184.A"}, {"color": "#fcb498", "dtype": "ligand", "id": "PHE124.A", "label": "PHE124.A", "shape": "dot", "size": 10, "title": "PHE124.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "LEU101.A", "label": "LEU101.A", "shape": "dot", "size": 10, "title": "LEU101.A"}, {"color": "#ec382b", "dtype": "ligand", "id": "TRP125.A", "label": "TRP125.A", "shape": "dot", "size": 10, "title": "TRP125.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "VAL102.A", "label": "VAL102.A", "shape": "dot", "size": 10, "title": "VAL102.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "SER106.A", "label": "SER106.A", "shape": "dot", "size": 10, "title": "SER106.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "TYR109.A", "label": "TYR109.A", "shape": "dot", "size": 10, "title": "TYR109.A"}, {"color": "#f7593f", "dtype": "ligand", "id": "LEU126.A", "label": "LEU126.A", "shape": "dot", "size": 10, "title": "LEU126.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "VAL200.A", "label": "VAL200.A", "shape": "dot", "size": 10, "title": "VAL200.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "VAL201.A", "label": "VAL201.A", "shape": "dot", "size": 10, "title": "VAL201.A"}, {"color": "#fc9676", "dtype": "ligand", "id": "SER127.A", "label": "SER127.A", "shape": "dot", "size": 10, "title": "SER127.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "SER181.A", "label": "SER181.A", "shape": "dot", "size": 10, "title": "SER181.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "LEU182.A", "label": "LEU182.A", "shape": "dot", "size": 10, "title": "LEU182.A"}, {"color": "#fdcfbc", "dtype": "ligand", "id": "SER128.A", "label": "SER128.A", "shape": "dot", "size": 10, "title": "SER128.A"}, {"color": "#fdcfbc", "dtype": "ligand", "id": "ASP129.A", "label": "ASP129.A", "shape": "dot", "size": 10, "title": "ASP129.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "TYR359.B", "label": "TYR359.B", "shape": "dot", "size": 10, "title": "TYR359.B"}, {"color": "#d21e20", "dtype": "ligand", "id": "ILE130.A", "label": "ILE130.A", "shape": "dot", "size": 10, "title": "ILE130.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "ILE180.A", "label": "ILE180.A", "shape": "dot", "size": 10, "title": "ILE180.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "TYR208.A", "label": "TYR208.A", "shape": "dot", "size": 10, "title": "TYR208.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "SER212.A", "label": "SER212.A", "shape": "dot", "size": 10, "title": "SER212.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "ALA216.A", "label": "ALA216.A", "shape": "dot", "size": 10, "title": "ALA216.A"}, {"color": "#fb7959", "dtype": "ligand", "id": "THR131.A", "label": "THR131.A", "shape": "dot", "size": 10, "title": "THR131.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "LEU97.A", "label": "LEU97.A", "shape": "dot", "size": 10, "title": "LEU97.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "TRP174.A", "label": "TRP174.A", "shape": "dot", "size": 10, "title": "TRP174.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "SER177.A", "label": "SER177.A", "shape": "dot", "size": 10, "title": "SER177.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "ILE178.A", "label": "ILE178.A", "shape": "dot", "size": 10, "title": "ILE178.A"}, {"color": "#fb7959", "dtype": "ligand", "id": "CYS132.A", "label": "CYS132.A", "shape": "dot", "size": 10, "title": "CYS132.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "THR94.A", "label": "THR94.A", "shape": "dot", "size": 10, "title": "THR94.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "VAL98.A", "label": "VAL98.A", "shape": "dot", "size": 10, "title": "VAL98.A"}, {"color": "#fb7959", "dtype": "ligand", "id": "CYS133.A", "label": "CYS133.A", "shape": "dot", "size": 10, "title": "CYS133.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "PHE217.A", "label": "PHE217.A", "shape": "dot", "size": 10, "title": "PHE217.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "PHE323.B", "label": "PHE323.B", "shape": "dot", "size": 10, "title": "PHE323.B"}, {"color": "#e5eff9", "dtype": "protein", "id": "TRP327.B", "label": "TRP327.B", "shape": "dot", "size": 10, "title": "TRP327.B"}, {"color": "#e5eff9", "dtype": "protein", "id": "PHE331.B", "label": "PHE331.B", "shape": "dot", "size": 10, "title": "PHE331.B"}, {"color": "#fb7959", "dtype": "ligand", "id": "THR134.A", "label": "THR134.A", "shape": "dot", "size": 10, "title": "THR134.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "PHE176.A", "label": "PHE176.A", "shape": "dot", "size": 10, "title": "PHE176.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "GLY215.A", "label": "GLY215.A", "shape": "dot", "size": 10, "title": "GLY215.A"}, {"color": "#fc9676", "dtype": "ligand", "id": "ALA135.A", "label": "ALA135.A", "shape": "dot", "size": 10, "title": "ALA135.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "VAL173.A", "label": "VAL173.A", "shape": "dot", "size": 10, "title": "VAL173.A"}, {"color": "#fc9676", "dtype": "ligand", "id": "SER136.A", "label": "SER136.A", "shape": "dot", "size": 10, "title": "SER136.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "LEU91.A", "label": "LEU91.A", "shape": "dot", "size": 10, "title": "LEU91.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "ASP95.A", "label": "ASP95.A", "shape": "dot", "size": 10, "title": "ASP95.A"}, {"color": "#ec382b", "dtype": "ligand", "id": "ILE137.A", "label": "ILE137.A", "shape": "dot", "size": 10, "title": "ILE137.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "PRO220.A", "label": "PRO220.A", "shape": "dot", "size": 10, "title": "PRO220.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "THR221.A", "label": "THR221.A", "shape": "dot", "size": 10, "title": "THR221.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "LEU224.A", "label": "LEU224.A", "shape": "dot", "size": 10, "title": "LEU224.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "LEU320.B", "label": "LEU320.B", "shape": "dot", "size": 10, "title": "LEU320.B"}, {"color": "#f7593f", "dtype": "ligand", "id": "LEU138.A", "label": "LEU138.A", "shape": "dot", "size": 10, "title": "LEU138.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "LEU223.A", "label": "LEU223.A", "shape": "dot", "size": 10, "title": "LEU223.A"}, {"color": "#ec382b", "dtype": "ligand", "id": "HSD139.A", "label": "HSD139.A", "shape": "dot", "size": 10, "title": "HSD139.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "LEU87.A", "label": "LEU87.A", "shape": "dot", "size": 10, "title": "LEU87.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "SER90.A", "label": "SER90.A", "shape": "dot", "size": 10, "title": "SER90.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "ILE170.A", "label": "ILE170.A", "shape": "dot", "size": 10, "title": "ILE170.A"}, {"color": "#f7593f", "dtype": "ligand", "id": "LEU140.A", "label": "LEU140.A", "shape": "dot", "size": 10, "title": "LEU140.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "LEU316.B", "label": "LEU316.B", "shape": "dot", "size": 10, "title": "LEU316.B"}, {"color": "#e5eff9", "dtype": "protein", "id": "ILE319.B", "label": "ILE319.B", "shape": "dot", "size": 10, "title": "ILE319.B"}, {"color": "#fc9676", "dtype": "ligand", "id": "CYS141.A", "label": "CYS141.A", "shape": "dot", "size": 10, "title": "CYS141.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "LEU227.A", "label": "LEU227.A", "shape": "dot", "size": 10, "title": "LEU227.A"}, {"color": "#fc9676", "dtype": "ligand", "id": "VAL142.A", "label": "VAL142.A", "shape": "dot", "size": 10, "title": "VAL142.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "MET169.A", "label": "MET169.A", "shape": "dot", "size": 10, "title": "MET169.A"}, {"color": "#ec382b", "dtype": "ligand", "id": "ILE143.A", "label": "ILE143.A", "shape": "dot", "size": 10, "title": "ILE143.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "ILE88.A", "label": "ILE88.A", "shape": "dot", "size": 10, "title": "ILE88.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "THR313.B", "label": "THR313.B", "shape": "dot", "size": 10, "title": "THR313.B"}, {"color": "#e5eff9", "dtype": "protein", "id": "TYR369.B", "label": "TYR369.B", "shape": "dot", "size": 10, "title": "TYR369.B"}, {"color": "#f7593f", "dtype": "ligand", "id": "ALA144.A", "label": "ALA144.A", "shape": "dot", "size": 10, "title": "ALA144.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "TYR228.A", "label": "TYR228.A", "shape": "dot", "size": 10, "title": "TYR228.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "ILE231.A", "label": "ILE231.A", "shape": "dot", "size": 10, "title": "ILE231.A"}, {"color": "#fdcfbc", "dtype": "ligand", "id": "LEU145.A", "label": "LEU145.A", "shape": "dot", "size": 10, "title": "LEU145.A"}, {"color": "#fc9676", "dtype": "ligand", "id": "ASP146.A", "label": "ASP146.A", "shape": "dot", "size": 10, "title": "ASP146.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "ALA84.A", "label": "ALA84.A", "shape": "dot", "size": 10, "title": "ALA84.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "TYR157.A", "label": "TYR157.A", "shape": "dot", "size": 10, "title": "TYR157.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "ARG161.A", "label": "ARG161.A", "shape": "dot", "size": 10, "title": "ARG161.A"}, {"color": "#ec382b", "dtype": "ligand", "id": "ARG147.A", "label": "ARG147.A", "shape": "dot", "size": 10, "title": "ARG147.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "GLU309.B", "label": "GLU309.B", "shape": "dot", "size": 10, "title": "GLU309.B"}, {"color": "#e5eff9", "dtype": "protein", "id": "ALA312.B", "label": "ALA312.B", "shape": "dot", "size": 10, "title": "ALA312.B"}, {"color": "#fc9676", "dtype": "ligand", "id": "TYR148.A", "label": "TYR148.A", "shape": "dot", "size": 10, "title": "TYR148.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "ARG230.A", "label": "ARG230.A", "shape": "dot", "size": 10, "title": "ARG230.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "GLU234.A", "label": "GLU234.A", "shape": "dot", "size": 10, "title": "GLU234.A"}, {"color": "#fb7959", "dtype": "ligand", "id": "TRP149.A", "label": "TRP149.A", "shape": "dot", "size": 10, "title": "TRP149.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "ASP153.A", "label": "ASP153.A", "shape": "dot", "size": 10, "title": "ASP153.A"}, {"color": "#a2cce2", "dtype": "protein", "id": "ALA154.A", "label": "ALA154.A", "shape": "dot", "size": 10, "title": "ALA154.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "ARG165.A", "label": "ARG165.A", "shape": "dot", "size": 10, "title": "ARG165.A"}, {"color": "#ec382b", "dtype": "ligand", "id": "ALA150.A", "label": "ALA150.A", "shape": "dot", "size": 10, "title": "ALA150.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "SER158.A", "label": "SER158.A", "shape": "dot", "size": 10, "title": "SER158.A"}, {"color": "#bfd8ec", "dtype": "protein", "id": "ARG238.A", "label": "ARG238.A", "shape": "dot", "size": 10, "title": "ARG238.A"}, {"color": "#67000d", "dtype": "ligand", "id": "ILE151.A", "label": "ILE151.A", "shape": "dot", "size": 10, "title": "ILE151.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "ALA235.A", "label": "ALA235.A", "shape": "dot", "size": 10, "title": "ALA235.A"}, {"color": "#d3e4f3", "dtype": "protein", "id": "LYS241.A", "label": "LYS241.A", "shape": "dot", "size": 10, "title": "LYS241.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "ASN245.A", "label": "ASN245.A", "shape": "dot", "size": 10, "title": "ASN245.A"}, {"color": "#e5eff9", "dtype": "protein", "id": "ARG310.B", "label": "ARG310.B", "shape": "dot", "size": 10, "title": "ARG310.B"}, {"color": "#fb7959", "dtype": "ligand", "id": "THR152.A", "label": "THR152.A", "shape": "dot", "size": 10, "title": "THR152.A"}]);
+                  edges = new vis.DataSet([{"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - GLY118.A\u003cbr\u003eHydrophobic: 25", "to": "GLY118.A", "width": 1.0}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - GLN189.A\u003cbr\u003eHydrophobic: 7\u003cbr\u003eHBAcceptor: 6", "to": "GLN189.A", "width": 0.28}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - ALA190.A\u003cbr\u003eHBDonor: 2", "to": "ALA190.A", "width": 0.08}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - LYS191.A\u003cbr\u003eHydrophobic: 3", "to": "LYS191.A", "width": 0.12}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - ALA192.A\u003cbr\u003eHydrophobic: 4\u003cbr\u003eHBDonor: 2\u003cbr\u003eHBAcceptor: 1", "to": "ALA192.A", "width": 0.2}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - GLU193.A\u003cbr\u003eHydrophobic: 3", "to": "GLU193.A", "width": 0.12}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - GLU194.A\u003cbr\u003eHydrophobic: 3\u003cbr\u003eHBDonor: 2\u003cbr\u003eHBAcceptor: 1", "to": "GLU194.A", "width": 0.2}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - GLU195.A\u003cbr\u003eHydrophobic: 3", "to": "GLU195.A", "width": 0.12}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - VAL196.A\u003cbr\u003eHydrophobic: 10\u003cbr\u003eHBDonor: 1\u003cbr\u003eHBAcceptor: 3", "to": "VAL196.A", "width": 0.44}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - SER197.A\u003cbr\u003eHydrophobic: 2\u003cbr\u003eHBDonor: 1\u003cbr\u003eHBAcceptor: 2", "to": "SER197.A", "width": 0.16}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - GLU198.A\u003cbr\u003eHydrophobic: 2\u003cbr\u003eHBDonor: 6\u003cbr\u003eHBAcceptor: 1", "to": "GLU198.A", "width": 0.28}, {"color": "#a9a9a9", "from": "GLN119.A", "title": "GLN119.A - CYS199.A\u003cbr\u003eHBAcceptor: 1", "to": "CYS199.A", "width": 0.04}, {"color": "#a9a9a9", "from": "VAL120.A", "title": "VAL120.A - GLY118.A\u003cbr\u003eHydrophobic: 1", "to": "GLY118.A", "width": 0.04}, {"color": "#a9a9a9", "from": "VAL120.A", "title": "VAL120.A - PHE185.A\u003cbr\u003eHydrophobic: 1", "to": "PHE185.A", "width": 0.04}, {"color": "#a9a9a9", "from": "VAL120.A", "title": "VAL120.A - ARG188.A\u003cbr\u003eHydrophobic: 1", "to": "ARG188.A", "width": 0.04}, {"color": "#a9a9a9", "from": "VAL120.A", "title": "VAL120.A - LYS191.A\u003cbr\u003eHydrophobic: 1", "to": "LYS191.A", "width": 0.04}, {"color": "#a9a9a9", "from": "VAL121.A", "title": "VAL121.A - ILE105.A\u003cbr\u003eHydrophobic: 8", "to": "ILE105.A", "width": 0.32}, {"color": "#a9a9a9", "from": "VAL121.A", "title": "VAL121.A - TRP115.A\u003cbr\u003eHydrophobic: 25", "to": "TRP115.A", "width": 1.0}, {"color": "#a9a9a9", "from": "VAL121.A", "title": "VAL121.A - LEU117.A\u003cbr\u003eHydrophobic: 24", "to": "LEU117.A", "width": 0.96}, {"color": "#a9a9a9", "from": "VAL121.A", "title": "VAL121.A - GLY118.A\u003cbr\u003eHydrophobic: 5", "to": "GLY118.A", "width": 0.2}, {"color": "#a9a9a9", "from": "CYS122.A", "title": "CYS122.A - TRP115.A\u003cbr\u003eHydrophobic: 25", "to": "TRP115.A", "width": 1.0}, {"color": "#a9a9a9", "from": "CYS122.A", "title": "CYS122.A - GLY118.A\u003cbr\u003eHydrophobic: 8\u003cbr\u003eHBDonor: 21", "to": "GLY118.A", "width": 0.84}, {"color": "#a9a9a9", "from": "CYS122.A", "title": "CYS122.A - LYS191.A\u003cbr\u003eAnionic: 1", "to": "LYS191.A", "width": 0.04}, {"color": "#a9a9a9", "from": "CYS122.A", "title": "CYS122.A - VAL196.A\u003cbr\u003eHydrophobic: 1", "to": "VAL196.A", "width": 0.04}, {"color": "#a9a9a9", "from": "CYS122.A", "title": "CYS122.A - CYS199.A\u003cbr\u003eHydrophobic: 25", "to": "CYS199.A", "width": 1.0}, {"color": "#a9a9a9", "from": "ASP123.A", "title": "ASP123.A - PRO184.A\u003cbr\u003eHydrophobic: 7", "to": "PRO184.A", "width": 0.28}, {"color": "#a9a9a9", "from": "ASP123.A", "title": "ASP123.A - PHE185.A\u003cbr\u003eHydrophobic: 19", "to": "PHE185.A", "width": 0.76}, {"color": "#a9a9a9", "from": "ASP123.A", "title": "ASP123.A - ARG188.A\u003cbr\u003eHydrophobic: 5\u003cbr\u003eHBAcceptor: 6\u003cbr\u003eAnionic: 5", "to": "ARG188.A", "width": 0.24}, {"color": "#a9a9a9", "from": "ASP123.A", "title": "ASP123.A - GLN189.A\u003cbr\u003eHydrophobic: 7\u003cbr\u003eHBAcceptor: 6", "to": "GLN189.A", "width": 0.28}, {"color": "#a9a9a9", "from": "ASP123.A", "title": "ASP123.A - LYS191.A\u003cbr\u003eHydrophobic: 7\u003cbr\u003eHBAcceptor: 6\u003cbr\u003eAnionic: 8", "to": "LYS191.A", "width": 0.32}, {"color": "#a9a9a9", "from": "ASP123.A", "title": "ASP123.A - CYS199.A\u003cbr\u003eHydrophobic: 1", "to": "CYS199.A", "width": 0.04}, {"color": "#a9a9a9", "from": "PHE124.A", "title": "PHE124.A - LEU101.A\u003cbr\u003eHydrophobic: 18", "to": "LEU101.A", "width": 0.72}, {"color": "#a9a9a9", "from": "PHE124.A", "title": "PHE124.A - ILE105.A\u003cbr\u003eHydrophobic: 1", "to": "ILE105.A", "width": 0.04}, {"color": "#a9a9a9", "from": "PHE124.A", "title": "PHE124.A - PHE185.A\u003cbr\u003eHydrophobic: 13\u003cbr\u003ePiStacking: 2", "to": "PHE185.A", "width": 0.52}, {"color": "#a9a9a9", "from": "TRP125.A", "title": "TRP125.A - LEU101.A\u003cbr\u003eHydrophobic: 2", "to": "LEU101.A", "width": 0.08}, {"color": "#a9a9a9", "from": "TRP125.A", "title": "TRP125.A - VAL102.A\u003cbr\u003eHydrophobic: 25\u003cbr\u003eHBDonor: 15", "to": "VAL102.A", "width": 1.0}, {"color": "#a9a9a9", "from": "TRP125.A", "title": "TRP125.A - ILE105.A\u003cbr\u003eHydrophobic: 24", "to": "ILE105.A", "width": 0.96}, {"color": "#a9a9a9", "from": "TRP125.A", "title": "TRP125.A - SER106.A\u003cbr\u003eHydrophobic: 24\u003cbr\u003eHBDonor: 6", "to": "SER106.A", "width": 1.0}, {"color": "#a9a9a9", "from": "TRP125.A", "title": "TRP125.A - TYR109.A\u003cbr\u003eHydrophobic: 25\u003cbr\u003ePiStacking: 12", "to": "TYR109.A", "width": 1.0}, {"color": "#a9a9a9", "from": "TRP125.A", "title": "TRP125.A - TRP115.A\u003cbr\u003eHydrophobic: 25\u003cbr\u003ePiStacking: 20", "to": "TRP115.A", "width": 1.0}, {"color": "#a9a9a9", "from": "TRP125.A", "title": "TRP125.A - CYS199.A\u003cbr\u003eHydrophobic: 16", "to": "CYS199.A", "width": 0.64}, {"color": "#a9a9a9", "from": "LEU126.A", "title": "LEU126.A - PRO184.A\u003cbr\u003eHydrophobic: 7", "to": "PRO184.A", "width": 0.28}, {"color": "#a9a9a9", "from": "LEU126.A", "title": "LEU126.A - PHE185.A\u003cbr\u003eHydrophobic: 2", "to": "PHE185.A", "width": 0.08}, {"color": "#a9a9a9", "from": "LEU126.A", "title": "LEU126.A - ALA190.A\u003cbr\u003eHydrophobic: 1", "to": "ALA190.A", "width": 0.04}, {"color": "#a9a9a9", "from": "LEU126.A", "title": "LEU126.A - CYS199.A\u003cbr\u003eHydrophobic: 3", "to": "CYS199.A", "width": 0.12}, {"color": "#a9a9a9", "from": "LEU126.A", "title": "LEU126.A - VAL200.A\u003cbr\u003eHydrophobic: 12", "to": "VAL200.A", "width": 0.48}, {"color": "#a9a9a9", "from": "LEU126.A", "title": "LEU126.A - VAL201.A\u003cbr\u003eHydrophobic: 24", "to": "VAL201.A", "width": 0.96}, {"color": "#a9a9a9", "from": "SER127.A", "title": "SER127.A - SER181.A\u003cbr\u003eHydrophobic: 12\u003cbr\u003eHBDonor: 8", "to": "SER181.A", "width": 0.6}, {"color": "#a9a9a9", "from": "SER127.A", "title": "SER127.A - LEU182.A\u003cbr\u003eHydrophobic: 1", "to": "LEU182.A", "width": 0.04}, {"color": "#a9a9a9", "from": "SER127.A", "title": "SER127.A - PRO184.A\u003cbr\u003eHydrophobic: 4", "to": "PRO184.A", "width": 0.16}, {"color": "#a9a9a9", "from": "SER127.A", "title": "SER127.A - PHE185.A\u003cbr\u003eHydrophobic: 15", "to": "PHE185.A", "width": 0.6}, {"color": "#a9a9a9", "from": "SER128.A", "title": "SER128.A - LEU101.A\u003cbr\u003eHydrophobic: 17", "to": "LEU101.A", "width": 0.68}, {"color": "#a9a9a9", "from": "SER128.A", "title": "SER128.A - VAL102.A\u003cbr\u003eHydrophobic: 21", "to": "VAL102.A", "width": 0.84}, {"color": "#a9a9a9", "from": "ASP129.A", "title": "ASP129.A - VAL102.A\u003cbr\u003eHydrophobic: 25", "to": "VAL102.A", "width": 1.0}, {"color": "#a9a9a9", "from": "ASP129.A", "title": "ASP129.A - TYR359.B\u003cbr\u003eHydrophobic: 23\u003cbr\u003eHBAcceptor: 24", "to": "TYR359.B", "width": 1.0}, {"color": "#a9a9a9", "from": "ILE130.A", "title": "ILE130.A - ILE180.A\u003cbr\u003eHydrophobic: 12", "to": "ILE180.A", "width": 0.48}, {"color": "#a9a9a9", "from": "ILE130.A", "title": "ILE130.A - SER181.A\u003cbr\u003eHydrophobic: 18", "to": "SER181.A", "width": 0.72}, {"color": "#a9a9a9", "from": "ILE130.A", "title": "ILE130.A - PRO184.A\u003cbr\u003eHydrophobic: 7", "to": "PRO184.A", "width": 0.28}, {"color": "#a9a9a9", "from": "ILE130.A", "title": "ILE130.A - PHE185.A\u003cbr\u003eHydrophobic: 1", "to": "PHE185.A", "width": 0.04}, {"color": "#a9a9a9", "from": "ILE130.A", "title": "ILE130.A - VAL201.A\u003cbr\u003eHydrophobic: 1", "to": "VAL201.A", "width": 0.04}, {"color": "#a9a9a9", "from": "ILE130.A", "title": "ILE130.A - TYR208.A\u003cbr\u003eHydrophobic: 4", "to": "TYR208.A", "width": 0.16}, {"color": "#a9a9a9", "from": "ILE130.A", "title": "ILE130.A - SER212.A\u003cbr\u003eHydrophobic: 5", "to": "SER212.A", "width": 0.2}, {"color": "#a9a9a9", "from": "ILE130.A", "title": "ILE130.A - ALA216.A\u003cbr\u003eHydrophobic: 2", "to": "ALA216.A", "width": 0.08}, {"color": "#a9a9a9", "from": "THR131.A", "title": "THR131.A - LEU97.A\u003cbr\u003eHydrophobic: 1", "to": "LEU97.A", "width": 0.04}, {"color": "#a9a9a9", "from": "THR131.A", "title": "THR131.A - TRP174.A\u003cbr\u003eHydrophobic: 18", "to": "TRP174.A", "width": 0.72}, {"color": "#a9a9a9", "from": "THR131.A", "title": "THR131.A - SER177.A\u003cbr\u003eHydrophobic: 21\u003cbr\u003eHBDonor: 2", "to": "SER177.A", "width": 0.84}, {"color": "#a9a9a9", "from": "THR131.A", "title": "THR131.A - ILE178.A\u003cbr\u003eHydrophobic: 19", "to": "ILE178.A", "width": 0.76}, {"color": "#a9a9a9", "from": "THR131.A", "title": "THR131.A - SER181.A\u003cbr\u003eHydrophobic: 10\u003cbr\u003eHBDonor: 4\u003cbr\u003eHBAcceptor: 3", "to": "SER181.A", "width": 0.56}, {"color": "#a9a9a9", "from": "CYS132.A", "title": "CYS132.A - THR94.A\u003cbr\u003eHydrophobic: 24", "to": "THR94.A", "width": 0.96}, {"color": "#a9a9a9", "from": "CYS132.A", "title": "CYS132.A - LEU97.A\u003cbr\u003eHydrophobic: 22", "to": "LEU97.A", "width": 0.88}, {"color": "#a9a9a9", "from": "CYS132.A", "title": "CYS132.A - VAL98.A\u003cbr\u003eHydrophobic: 25", "to": "VAL98.A", "width": 1.0}, {"color": "#a9a9a9", "from": "CYS132.A", "title": "CYS132.A - VAL102.A\u003cbr\u003eHydrophobic: 2", "to": "VAL102.A", "width": 0.08}, {"color": "#a9a9a9", "from": "CYS132.A", "title": "CYS132.A - TRP174.A\u003cbr\u003eHydrophobic: 3", "to": "TRP174.A", "width": 0.12}, {"color": "#a9a9a9", "from": "CYS133.A", "title": "CYS133.A - ALA216.A\u003cbr\u003eHydrophobic: 5\u003cbr\u003eHBDonor: 3", "to": "ALA216.A", "width": 0.2}, {"color": "#a9a9a9", "from": "CYS133.A", "title": "CYS133.A - PHE217.A\u003cbr\u003eHydrophobic: 1", "to": "PHE217.A", "width": 0.04}, {"color": "#a9a9a9", "from": "CYS133.A", "title": "CYS133.A - PHE323.B\u003cbr\u003eHydrophobic: 8", "to": "PHE323.B", "width": 0.32}, {"color": "#a9a9a9", "from": "CYS133.A", "title": "CYS133.A - TRP327.B\u003cbr\u003eHydrophobic: 23", "to": "TRP327.B", "width": 0.92}, {"color": "#a9a9a9", "from": "CYS133.A", "title": "CYS133.A - PHE331.B\u003cbr\u003eHydrophobic: 20", "to": "PHE331.B", "width": 0.8}, {"color": "#a9a9a9", "from": "THR134.A", "title": "THR134.A - PHE176.A\u003cbr\u003eHydrophobic: 4", "to": "PHE176.A", "width": 0.16}, {"color": "#a9a9a9", "from": "THR134.A", "title": "THR134.A - SER177.A\u003cbr\u003eHydrophobic: 22", "to": "SER177.A", "width": 0.88}, {"color": "#a9a9a9", "from": "THR134.A", "title": "THR134.A - ILE180.A\u003cbr\u003eHydrophobic: 23", "to": "ILE180.A", "width": 0.92}, {"color": "#a9a9a9", "from": "THR134.A", "title": "THR134.A - GLY215.A\u003cbr\u003eHydrophobic: 2", "to": "GLY215.A", "width": 0.08}, {"color": "#a9a9a9", "from": "THR134.A", "title": "THR134.A - ALA216.A\u003cbr\u003eHydrophobic: 18", "to": "ALA216.A", "width": 0.72}, {"color": "#a9a9a9", "from": "ALA135.A", "title": "ALA135.A - THR94.A\u003cbr\u003eHydrophobic: 23", "to": "THR94.A", "width": 0.92}, {"color": "#a9a9a9", "from": "ALA135.A", "title": "ALA135.A - VAL173.A\u003cbr\u003eHydrophobic: 19", "to": "VAL173.A", "width": 0.76}, {"color": "#a9a9a9", "from": "ALA135.A", "title": "ALA135.A - TRP174.A\u003cbr\u003eHydrophobic: 15", "to": "TRP174.A", "width": 0.6}, {"color": "#a9a9a9", "from": "ALA135.A", "title": "ALA135.A - SER177.A\u003cbr\u003eHydrophobic: 21", "to": "SER177.A", "width": 0.84}, {"color": "#a9a9a9", "from": "SER136.A", "title": "SER136.A - LEU91.A\u003cbr\u003eHydrophobic: 23", "to": "LEU91.A", "width": 0.92}, {"color": "#a9a9a9", "from": "SER136.A", "title": "SER136.A - THR94.A\u003cbr\u003eHydrophobic: 9", "to": "THR94.A", "width": 0.36}, {"color": "#a9a9a9", "from": "SER136.A", "title": "SER136.A - ASP95.A\u003cbr\u003eHBAcceptor: 1", "to": "ASP95.A", "width": 0.04}, {"color": "#a9a9a9", "from": "SER136.A", "title": "SER136.A - PHE323.B\u003cbr\u003eHydrophobic: 20", "to": "PHE323.B", "width": 0.8}, {"color": "#a9a9a9", "from": "ILE137.A", "title": "ILE137.A - ALA216.A\u003cbr\u003eHydrophobic: 17", "to": "ALA216.A", "width": 0.68}, {"color": "#a9a9a9", "from": "ILE137.A", "title": "ILE137.A - PHE217.A\u003cbr\u003eHydrophobic: 12", "to": "PHE217.A", "width": 0.48}, {"color": "#a9a9a9", "from": "ILE137.A", "title": "ILE137.A - PRO220.A\u003cbr\u003eHydrophobic: 22", "to": "PRO220.A", "width": 0.88}, {"color": "#a9a9a9", "from": "ILE137.A", "title": "ILE137.A - THR221.A\u003cbr\u003eHydrophobic: 14", "to": "THR221.A", "width": 0.56}, {"color": "#a9a9a9", "from": "ILE137.A", "title": "ILE137.A - LEU224.A\u003cbr\u003eHydrophobic: 18", "to": "LEU224.A", "width": 0.72}, {"color": "#a9a9a9", "from": "ILE137.A", "title": "ILE137.A - LEU320.B\u003cbr\u003eHydrophobic: 1", "to": "LEU320.B", "width": 0.04}, {"color": "#a9a9a9", "from": "ILE137.A", "title": "ILE137.A - PHE323.B\u003cbr\u003eHydrophobic: 25", "to": "PHE323.B", "width": 1.0}, {"color": "#a9a9a9", "from": "LEU138.A", "title": "LEU138.A - VAL173.A\u003cbr\u003eHydrophobic: 25", "to": "VAL173.A", "width": 1.0}, {"color": "#a9a9a9", "from": "LEU138.A", "title": "LEU138.A - PHE176.A\u003cbr\u003eHydrophobic: 24", "to": "PHE176.A", "width": 0.96}, {"color": "#a9a9a9", "from": "LEU138.A", "title": "LEU138.A - SER177.A\u003cbr\u003eHydrophobic: 3", "to": "SER177.A", "width": 0.12}, {"color": "#a9a9a9", "from": "LEU138.A", "title": "LEU138.A - ILE180.A\u003cbr\u003eHydrophobic: 1", "to": "ILE180.A", "width": 0.04}, {"color": "#a9a9a9", "from": "LEU138.A", "title": "LEU138.A - PRO220.A\u003cbr\u003eHydrophobic: 18", "to": "PRO220.A", "width": 0.72}, {"color": "#a9a9a9", "from": "LEU138.A", "title": "LEU138.A - LEU223.A\u003cbr\u003eHydrophobic: 2", "to": "LEU223.A", "width": 0.08}, {"color": "#a9a9a9", "from": "HSD139.A", "title": "HSD139.A - LEU87.A\u003cbr\u003eHydrophobic: 2", "to": "LEU87.A", "width": 0.08}, {"color": "#a9a9a9", "from": "HSD139.A", "title": "HSD139.A - SER90.A\u003cbr\u003eHydrophobic: 25", "to": "SER90.A", "width": 1.0}, {"color": "#a9a9a9", "from": "HSD139.A", "title": "HSD139.A - LEU91.A\u003cbr\u003eHydrophobic: 23", "to": "LEU91.A", "width": 0.92}, {"color": "#a9a9a9", "from": "HSD139.A", "title": "HSD139.A - THR94.A\u003cbr\u003eHydrophobic: 8", "to": "THR94.A", "width": 0.32}, {"color": "#a9a9a9", "from": "HSD139.A", "title": "HSD139.A - ILE170.A\u003cbr\u003eHydrophobic: 14", "to": "ILE170.A", "width": 0.56}, {"color": "#a9a9a9", "from": "HSD139.A", "title": "HSD139.A - VAL173.A\u003cbr\u003eHydrophobic: 21", "to": "VAL173.A", "width": 0.84}, {"color": "#a9a9a9", "from": "HSD139.A", "title": "HSD139.A - TRP174.A\u003cbr\u003eHydrophobic: 14\u003cbr\u003ePiStacking: 9", "to": "TRP174.A", "width": 0.56}, {"color": "#a9a9a9", "from": "LEU140.A", "title": "LEU140.A - LEU91.A\u003cbr\u003eHydrophobic: 17", "to": "LEU91.A", "width": 0.68}, {"color": "#a9a9a9", "from": "LEU140.A", "title": "LEU140.A - LEU224.A\u003cbr\u003eHydrophobic: 23", "to": "LEU224.A", "width": 0.92}, {"color": "#a9a9a9", "from": "LEU140.A", "title": "LEU140.A - LEU316.B\u003cbr\u003eHydrophobic: 10", "to": "LEU316.B", "width": 0.4}, {"color": "#a9a9a9", "from": "LEU140.A", "title": "LEU140.A - ILE319.B\u003cbr\u003eHydrophobic: 22", "to": "ILE319.B", "width": 0.88}, {"color": "#a9a9a9", "from": "LEU140.A", "title": "LEU140.A - LEU320.B\u003cbr\u003eHydrophobic: 14", "to": "LEU320.B", "width": 0.56}, {"color": "#a9a9a9", "from": "LEU140.A", "title": "LEU140.A - PHE323.B\u003cbr\u003eHydrophobic: 25", "to": "PHE323.B", "width": 1.0}, {"color": "#a9a9a9", "from": "CYS141.A", "title": "CYS141.A - PRO220.A\u003cbr\u003eHydrophobic: 16", "to": "PRO220.A", "width": 0.64}, {"color": "#a9a9a9", "from": "CYS141.A", "title": "CYS141.A - LEU223.A\u003cbr\u003eHydrophobic: 5", "to": "LEU223.A", "width": 0.2}, {"color": "#a9a9a9", "from": "CYS141.A", "title": "CYS141.A - LEU224.A\u003cbr\u003eHydrophobic: 23", "to": "LEU224.A", "width": 0.92}, {"color": "#a9a9a9", "from": "CYS141.A", "title": "CYS141.A - LEU227.A\u003cbr\u003eHydrophobic: 2", "to": "LEU227.A", "width": 0.08}, {"color": "#a9a9a9", "from": "VAL142.A", "title": "VAL142.A - LEU87.A\u003cbr\u003eHydrophobic: 25", "to": "LEU87.A", "width": 1.0}, {"color": "#a9a9a9", "from": "VAL142.A", "title": "VAL142.A - MET169.A\u003cbr\u003eHydrophobic: 22", "to": "MET169.A", "width": 0.88}, {"color": "#a9a9a9", "from": "VAL142.A", "title": "VAL142.A - ILE170.A\u003cbr\u003eHydrophobic: 4", "to": "ILE170.A", "width": 0.16}, {"color": "#a9a9a9", "from": "VAL142.A", "title": "VAL142.A - VAL173.A\u003cbr\u003eHydrophobic: 23", "to": "VAL173.A", "width": 0.92}, {"color": "#a9a9a9", "from": "ILE143.A", "title": "ILE143.A - LEU87.A\u003cbr\u003eHydrophobic: 24", "to": "LEU87.A", "width": 0.96}, {"color": "#a9a9a9", "from": "ILE143.A", "title": "ILE143.A - ILE88.A\u003cbr\u003eHydrophobic: 19", "to": "ILE88.A", "width": 0.76}, {"color": "#a9a9a9", "from": "ILE143.A", "title": "ILE143.A - LEU91.A\u003cbr\u003eHydrophobic: 8", "to": "LEU91.A", "width": 0.32}, {"color": "#a9a9a9", "from": "ILE143.A", "title": "ILE143.A - THR313.B\u003cbr\u003eHydrophobic: 2", "to": "THR313.B", "width": 0.08}, {"color": "#a9a9a9", "from": "ILE143.A", "title": "ILE143.A - LEU316.B\u003cbr\u003eHydrophobic: 19", "to": "LEU316.B", "width": 0.76}, {"color": "#a9a9a9", "from": "ILE143.A", "title": "ILE143.A - LEU320.B\u003cbr\u003eHydrophobic: 2", "to": "LEU320.B", "width": 0.08}, {"color": "#a9a9a9", "from": "ILE143.A", "title": "ILE143.A - TYR369.B\u003cbr\u003eHydrophobic: 1", "to": "TYR369.B", "width": 0.04}, {"color": "#a9a9a9", "from": "ALA144.A", "title": "ALA144.A - LEU224.A\u003cbr\u003eHydrophobic: 23", "to": "LEU224.A", "width": 0.92}, {"color": "#a9a9a9", "from": "ALA144.A", "title": "ALA144.A - LEU227.A\u003cbr\u003eHydrophobic: 25", "to": "LEU227.A", "width": 1.0}, {"color": "#a9a9a9", "from": "ALA144.A", "title": "ALA144.A - TYR228.A\u003cbr\u003eHydrophobic: 1", "to": "TYR228.A", "width": 0.04}, {"color": "#a9a9a9", "from": "ALA144.A", "title": "ALA144.A - ILE231.A\u003cbr\u003eHydrophobic: 17", "to": "ILE231.A", "width": 0.68}, {"color": "#a9a9a9", "from": "ALA144.A", "title": "ALA144.A - LEU316.B\u003cbr\u003eHydrophobic: 15", "to": "LEU316.B", "width": 0.6}, {"color": "#a9a9a9", "from": "ALA144.A", "title": "ALA144.A - LEU320.B\u003cbr\u003eHydrophobic: 1", "to": "LEU320.B", "width": 0.04}, {"color": "#a9a9a9", "from": "LEU145.A", "title": "LEU145.A - MET169.A\u003cbr\u003eHydrophobic: 10", "to": "MET169.A", "width": 0.4}, {"color": "#a9a9a9", "from": "LEU145.A", "title": "LEU145.A - LEU227.A\u003cbr\u003eHydrophobic: 23", "to": "LEU227.A", "width": 0.92}, {"color": "#a9a9a9", "from": "ASP146.A", "title": "ASP146.A - ALA84.A\u003cbr\u003eHydrophobic: 5", "to": "ALA84.A", "width": 0.2}, {"color": "#a9a9a9", "from": "ASP146.A", "title": "ASP146.A - LEU87.A\u003cbr\u003eHydrophobic: 17", "to": "LEU87.A", "width": 0.68}, {"color": "#a9a9a9", "from": "ASP146.A", "title": "ASP146.A - TYR157.A\u003cbr\u003eHydrophobic: 14\u003cbr\u003eHBAcceptor: 22", "to": "TYR157.A", "width": 0.88}, {"color": "#a9a9a9", "from": "ASP146.A", "title": "ASP146.A - ARG161.A\u003cbr\u003eHydrophobic: 12\u003cbr\u003eHBAcceptor: 12\u003cbr\u003eAnionic: 9", "to": "ARG161.A", "width": 0.48}, {"color": "#a9a9a9", "from": "ARG147.A", "title": "ARG147.A - ALA84.A\u003cbr\u003eHydrophobic: 3\u003cbr\u003eHBDonor: 1", "to": "ALA84.A", "width": 0.16}, {"color": "#a9a9a9", "from": "ARG147.A", "title": "ARG147.A - ILE88.A\u003cbr\u003eHydrophobic: 1", "to": "ILE88.A", "width": 0.04}, {"color": "#a9a9a9", "from": "ARG147.A", "title": "ARG147.A - ILE231.A\u003cbr\u003eHydrophobic: 19", "to": "ILE231.A", "width": 0.76}, {"color": "#a9a9a9", "from": "ARG147.A", "title": "ARG147.A - GLU309.B\u003cbr\u003eHydrophobic: 11\u003cbr\u003eHBDonor: 11\u003cbr\u003eCationic: 11", "to": "GLU309.B", "width": 0.44}, {"color": "#a9a9a9", "from": "ARG147.A", "title": "ARG147.A - ALA312.B\u003cbr\u003eHydrophobic: 10", "to": "ALA312.B", "width": 0.4}, {"color": "#a9a9a9", "from": "ARG147.A", "title": "ARG147.A - THR313.B\u003cbr\u003eHydrophobic: 7\u003cbr\u003eHBDonor: 4", "to": "THR313.B", "width": 0.32}, {"color": "#a9a9a9", "from": "ARG147.A", "title": "ARG147.A - LEU316.B\u003cbr\u003eHydrophobic: 17", "to": "LEU316.B", "width": 0.68}, {"color": "#a9a9a9", "from": "TYR148.A", "title": "TYR148.A - LEU227.A\u003cbr\u003eHydrophobic: 23", "to": "LEU227.A", "width": 0.92}, {"color": "#a9a9a9", "from": "TYR148.A", "title": "TYR148.A - ARG230.A\u003cbr\u003eHydrophobic: 23\u003cbr\u003eHBAcceptor: 2", "to": "ARG230.A", "width": 0.92}, {"color": "#a9a9a9", "from": "TYR148.A", "title": "TYR148.A - ILE231.A\u003cbr\u003eHydrophobic: 25", "to": "ILE231.A", "width": 1.0}, {"color": "#a9a9a9", "from": "TYR148.A", "title": "TYR148.A - GLU234.A\u003cbr\u003eHydrophobic: 15", "to": "GLU234.A", "width": 0.6}, {"color": "#a9a9a9", "from": "TRP149.A", "title": "TRP149.A - ASP153.A\u003cbr\u003eHydrophobic: 8\u003cbr\u003eHBAcceptor: 9", "to": "ASP153.A", "width": 0.56}, {"color": "#a9a9a9", "from": "TRP149.A", "title": "TRP149.A - ALA154.A\u003cbr\u003eHBAcceptor: 5", "to": "ALA154.A", "width": 0.2}, {"color": "#a9a9a9", "from": "TRP149.A", "title": "TRP149.A - TYR157.A\u003cbr\u003eHydrophobic: 24\u003cbr\u003ePiStacking: 6", "to": "TYR157.A", "width": 0.96}, {"color": "#a9a9a9", "from": "TRP149.A", "title": "TRP149.A - ARG165.A\u003cbr\u003eHydrophobic: 1", "to": "ARG165.A", "width": 0.04}, {"color": "#a9a9a9", "from": "TRP149.A", "title": "TRP149.A - MET169.A\u003cbr\u003eHydrophobic: 14", "to": "MET169.A", "width": 0.56}, {"color": "#a9a9a9", "from": "ALA150.A", "title": "ALA150.A - ASP153.A\u003cbr\u003eHydrophobic: 5\u003cbr\u003eHBAcceptor: 3", "to": "ASP153.A", "width": 0.24}, {"color": "#a9a9a9", "from": "ALA150.A", "title": "ALA150.A - ALA154.A\u003cbr\u003eHydrophobic: 12\u003cbr\u003eHBAcceptor: 1", "to": "ALA154.A", "width": 0.48}, {"color": "#a9a9a9", "from": "ALA150.A", "title": "ALA150.A - TYR157.A\u003cbr\u003eHydrophobic: 25", "to": "TYR157.A", "width": 1.0}, {"color": "#a9a9a9", "from": "ALA150.A", "title": "ALA150.A - SER158.A\u003cbr\u003eHydrophobic: 1", "to": "SER158.A", "width": 0.04}, {"color": "#a9a9a9", "from": "ALA150.A", "title": "ALA150.A - ARG161.A\u003cbr\u003eHydrophobic: 1", "to": "ARG161.A", "width": 0.04}, {"color": "#a9a9a9", "from": "ALA150.A", "title": "ALA150.A - ARG238.A\u003cbr\u003eHydrophobic: 1\u003cbr\u003eHBAcceptor: 1", "to": "ARG238.A", "width": 0.04}, {"color": "#a9a9a9", "from": "ALA150.A", "title": "ALA150.A - GLU309.B\u003cbr\u003eHydrophobic: 1", "to": "GLU309.B", "width": 0.04}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - ASP153.A\u003cbr\u003eHydrophobic: 1", "to": "ASP153.A", "width": 0.04}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - ALA154.A\u003cbr\u003eHydrophobic: 4\u003cbr\u003eHBAcceptor: 4", "to": "ALA154.A", "width": 0.2}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - ILE231.A\u003cbr\u003eHydrophobic: 16", "to": "ILE231.A", "width": 0.64}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - GLU234.A\u003cbr\u003eHydrophobic: 25", "to": "GLU234.A", "width": 1.0}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - ALA235.A\u003cbr\u003eHydrophobic: 22", "to": "ALA235.A", "width": 0.88}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - ARG238.A\u003cbr\u003eHydrophobic: 17\u003cbr\u003eHBAcceptor: 6", "to": "ARG238.A", "width": 0.76}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - LYS241.A\u003cbr\u003eHydrophobic: 1", "to": "LYS241.A", "width": 0.04}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - ASN245.A\u003cbr\u003eHBAcceptor: 1", "to": "ASN245.A", "width": 0.04}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - GLU309.B\u003cbr\u003eHydrophobic: 6", "to": "GLU309.B", "width": 0.24}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - ARG310.B\u003cbr\u003eHydrophobic: 1", "to": "ARG310.B", "width": 0.04}, {"color": "#a9a9a9", "from": "ILE151.A", "title": "ILE151.A - THR313.B\u003cbr\u003eHydrophobic: 2", "to": "THR313.B", "width": 0.08}, {"color": "#a9a9a9", "from": "THR152.A", "title": "THR152.A - ASP153.A\u003cbr\u003eHydrophobic: 25\u003cbr\u003eHBDonor: 1\u003cbr\u003eHBAcceptor: 1", "to": "ASP153.A", "width": 1.0}, {"color": "#a9a9a9", "from": "THR152.A", "title": "THR152.A - ALA154.A\u003cbr\u003eHydrophobic: 3", "to": "ALA154.A", "width": 0.12}, {"color": "#a9a9a9", "from": "THR152.A", "title": "THR152.A - GLU234.A\u003cbr\u003eHydrophobic: 18\u003cbr\u003eHBDonor: 4", "to": "GLU234.A", "width": 0.72}, {"color": "#a9a9a9", "from": "THR152.A", "title": "THR152.A - ARG238.A\u003cbr\u003eHydrophobic: 3\u003cbr\u003eHBAcceptor: 1", "to": "ARG238.A", "width": 0.16}, {"color": "#a9a9a9", "from": "THR152.A", "title": "THR152.A - LYS241.A\u003cbr\u003eHydrophobic: 1\u003cbr\u003eHBAcceptor: 1", "to": "LYS241.A", "width": 0.04}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

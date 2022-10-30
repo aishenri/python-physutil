@@ -1,0 +1,34 @@
+reinitialize
+fetch 1lyd, 1lyd
+##########################
+### Set your viewpoint ###
+##########################
+set_view (\
+    -0.682980239,    0.305771887,   -0.663358808,\
+    -0.392205656,    0.612626553,    0.686194837,\
+     0.616211832,    0.728826880,   -0.298486710,\
+     0.000000000,    0.000000000, -155.216171265,\
+     4.803394318,   63.977561951,  106.548652649,\
+   123.988197327,  186.444198608,   20.000000000 )
+#################
+### Set Style ###
+#################
+hide everything
+set cartoon_fancy_helices = 1
+set cartoon_highlight_color = grey70
+bg_colour white
+set antialias = 1
+set ortho = 1
+set sphere_mode, 5
+############################
+### Make your selections ###
+############################
+select sampleA, 1lyd and resi 1-20
+colour blue, 1lyd
+colour red, sampleA
+show cartoon, 1lyd
+###################
+### Save a copy ###
+###################
+ray 400,450
+png Lysozyme_Example_Output.png
